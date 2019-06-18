@@ -28,10 +28,18 @@ function createInterface(global) {
   document.addEventListener("message", onmessage);
   window.addEventListener("message", onmessage);
 
-  sendMessage({
-    id: 0,
-    method: "init"
-  });
+  mymonero_core_js.monero_utils_promise
+    .then(myMoneroUtils => {
+      this.myMoneroUtils = myMoneroUtils;
+
+      sendMessage({
+        id: 0,
+        method: "init"
+      });
+    })
+    .catch(err => {
+      document.write("error" + err);
+    });
 }
 
 module.exports = `(${createInterface})(window)`;
