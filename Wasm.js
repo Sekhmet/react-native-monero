@@ -12,7 +12,6 @@ export default class Wasm extends React.Component {
     this.rejectors = {};
 
     this.sendMessage = this.sendMessage.bind(this);
-    this.getConfig = this.getConfig.bind(this);
     this.handleMessage = this.handleMessage.bind(this);
   }
 
@@ -21,22 +20,18 @@ export default class Wasm extends React.Component {
 
     const id = this.counter++;
 
-    webView.postMessage(
-      JSON.stringify({
-        id,
-        ...message
-      })
-    );
+    const rawMessage = JSON.stringify({
+      id,
+      ...message
+    });
+
+    console.log("rawMessage", rawMessage);
+
+    webView.postMessage(rawMessage);
 
     return new Promise((resolve, reject) => {
       this.resolvers[id] = resolve;
-      this.rejectors = reject;
-    });
-  }
-
-  getConfig() {
-    return this.sendMessage({
-      method: "get_config"
+      this.rejectors[id] = reject;
     });
   }
 
@@ -45,8 +40,14 @@ export default class Wasm extends React.Component {
     const { id, result, error } = message;
 
     if (id === 0) {
-      return this.getConfig().then(config => {
-        console.log("config", config);
+      return this.sendMessage({
+        method: "decode_address",
+        params: [
+          "46FMSQVWCsRYsBhBaDzkwVR4xs1VzZbsfTWe5iM2yYnaNzm8L43ArHfZE8Vj4WeHpw4BUAAUtZkB6T9a3L4q9TebMVqKTfv",
+          0
+        ]
+      }).then(address => {
+        console.log("address", address);
       });
     }
 

@@ -17,8 +17,13 @@ function createInterface(global) {
     const message = JSON.parse(e.data);
 
     switch (message.method) {
-      case "get_config":
-        sendResponse(message.id, mymonero_core_js.monero_config);
+      case "decode_address":
+        const response = this.myMoneroUtils.decode_address(
+          message.params[0],
+          message.params[1]
+        );
+
+        sendResponse(message.id, response);
         break;
       default:
         break;
