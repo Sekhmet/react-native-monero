@@ -1,4 +1,5 @@
 import React from "react";
+import { Platform } from "react-native";
 import { WebView } from "react-native-webview";
 import iface from "./interface";
 
@@ -59,6 +60,11 @@ export default class Wasm extends React.Component {
   }
 
   render() {
+    const uri =
+      Platform.OS === "android"
+        ? "file:///android_asset/monero/index.html"
+        : "./monero/index.html";
+
     return (
       <WebView
         useWebKit
@@ -66,9 +72,9 @@ export default class Wasm extends React.Component {
         javaScriptEnabled
         originWhitelist={["*"]}
         ref="webView"
-        source={{ uri: "file:///android_asset/index.html" }}
+        source={{ uri }}
         injectedJavaScript={iface}
-        style={{ width: 0, height: 0 }}
+        style={{ width: 100, height: 100 }}
         onMessage={this.handleMessage}
       />
     );
